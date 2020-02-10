@@ -958,7 +958,6 @@ class WebServiceAPI {
                 })
                 
                 upload.responseJSON { response in
-                    log(response.result.value)
                     completion(response.result.value ?? ["":""])
                 }
             case .failure(let encodingError):
