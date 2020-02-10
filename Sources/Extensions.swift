@@ -495,18 +495,6 @@ extension Error {
         }
     }
     
-    var loyalError: LoyalError? {
-        guard let err = self as? ErrorResponse
-            else { return NSObject().construct(LoyalError.self) }
-        
-        switch err{
-        case ErrorResponse.error(_, let data, _):
-            if let d = data {
-                return try? JSONDecoder().decode(LoyalError.self, from: d)
-            }
-            return NSObject().construct(LoyalError.self)
-        }
-    }
 }
 
 typealias SelectionClosure = (_ indexPath :IndexPath)->Void
@@ -691,17 +679,6 @@ extension String {
     var dateWithTimeZone :Date {
         get {
             return DateFormatter.date(from: self)
-        }
-    }
-    
-    func formattedDateFromString() -> Date {
-        if Date.is24HoursFormat_1 {
-            return DateFormatter.date(from: self).addingTimeInterval(TimeInterval(TimeZone.current.secondsFromGMT()))
-        } else {
-            let dateFormatter = DateFormatter()
-            dateFormatter.setFormat(text: self)
-            dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-            return (dateFormatter.date(from: self) ?? Date()).addingTimeInterval(TimeInterval(TimeZone.current.secondsFromGMT()))
         }
     }
 }
@@ -978,7 +955,6 @@ class WebServiceAPI {
             case .success(let upload, _, _):
                 upload.uploadProgress(closure: { (progress) in
                     completionProgress?(progress)
-                    log("Upload Progress: \(progress.fractionCompleted)")
                 })
                 
                 upload.responseJSON { response in
@@ -986,7 +962,6 @@ class WebServiceAPI {
                     completion(response.result.value ?? ["":""])
                 }
             case .failure(let encodingError):
-                log(encodingError)
                 failure?(encodingError)
                 //                completion(false)
             }
