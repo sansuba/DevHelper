@@ -927,6 +927,7 @@ extension String {
     }
 }
 
+@available(iOS 9.0, *)
 extension UIStackView {
     func addBackground(color: UIColor) {
         let subView = UIView(frame: bounds)
